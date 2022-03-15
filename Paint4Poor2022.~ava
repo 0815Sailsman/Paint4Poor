@@ -14,14 +14,18 @@ import java.awt.image.BufferedImage;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 import javafx.event.Event;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 
 public class Paint4Poor2022 extends Application {
   private Pane root;
+  private Stage mainStage;
   ColorPicker colorPicker = new ColorPicker();
-  private Leinwand leinwand = new Leinwand(16, 16, 30, colorPicker);
+  private Leinwand leinwand = new Leinwand(16, 48, colorPicker);
   private Button save_button = new Button();
   private Button load_button = new Button();
+  private int comps_in_pane;
   
   public void start(Stage primaryStage) { 
     root = new Pane();
@@ -47,6 +51,7 @@ public class Paint4Poor2022 extends Application {
     colorPicker.setLayoutY(50);
     root.getChildren().add(colorPicker);
     // Ende Komponenten
+    comps_in_pane = root.getChildren().size();
     
     // Paint the buttons onto the pane
     leinwand.draw_to(root);
@@ -55,6 +60,8 @@ public class Paint4Poor2022 extends Application {
     primaryStage.setTitle("Paint4Poor2022");
     primaryStage.setScene(scene);
     primaryStage.show();
+    
+    mainStage = primaryStage;
   }   
   // Anfang Methoden
   
@@ -81,7 +88,22 @@ public class Paint4Poor2022 extends Application {
   }
   
   public void load_button_action(Event evt) {
-    System.out.println("Hello World");
+    if (root.getChildren().size() > comps_in_pane) {
+     root.getChildren().remove(260, root.getChildren().size()); 
+    }
+    System.out.println(root.getChildren().size());
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open Resource File");
+    fileChooser.getExtensionFilters().addAll(
+           new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
+    File selectedFile = fileChooser.showOpenDialog(mainStage);
+    if (selectedFile != null) {
+      System.out.println(selectedFile.getName());
+      // Load file into Image object
+      Image loaded_img = new Image(selectedFile.toURI().toString());      
+      leinwand.load(loaded_img);
+      leinwand.draw_to(root);
+    }
   }  
   // Ende Methoden
 
