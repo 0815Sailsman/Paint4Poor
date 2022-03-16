@@ -16,6 +16,8 @@ import javafx.scene.image.ImageView;
 import javafx.event.Event;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 
 
 public class Paint4Poor2022 extends Application {
@@ -25,6 +27,7 @@ public class Paint4Poor2022 extends Application {
   private Leinwand leinwand = new Leinwand(16, 48, colorPicker);
   private Button save_button = new Button();
   private Button load_button = new Button();
+  private MenuButton filetype_button = new MenuButton("Select Filetype");
   private int comps_in_pane;
   
   public void start(Stage primaryStage) { 
@@ -44,13 +47,28 @@ public class Paint4Poor2022 extends Application {
     );
     load_button.setText("Load Image from file");
     load_button.setLayoutX(550);
-    load_button.setLayoutY(200);
+    load_button.setLayoutY(150);
     root.getChildren().add(load_button);
+    
+    filetype_button.setLayoutX(550);
+    filetype_button.setLayoutY(200);
+    EventHandler<ActionEvent> menuItemEvent = new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent e) {
+            System.out.println(((MenuItem)e.getSource()).getText() + " selected");
+        }
+    };
+    MenuItem pngMenu = new MenuItem(".png");
+    MenuItem jpgMenu = new MenuItem(".jpg");
+    pngMenu.setOnAction(menuItemEvent);
+    jpgMenu.setOnAction(menuItemEvent);
+    filetype_button.getItems().addAll(pngMenu, jpgMenu);
+    root.getChildren().add(filetype_button);
     
     colorPicker.setLayoutX(550);
     colorPicker.setLayoutY(50);
     root.getChildren().add(colorPicker);
     // Ende Komponenten
+    
     comps_in_pane = root.getChildren().size();
     
     // Paint the buttons onto the pane
@@ -71,10 +89,14 @@ public class Paint4Poor2022 extends Application {
   } 
 
   public void save_button_action(Event evt) {
-    WritableImage temp = new WritableImage(leinwand.leinwand.length, leinwand.leinwand[0].length);
-    for (int y=0; y<leinwand.leinwand.length; y++) {
-      for (int x=0; x<leinwand.leinwand[0].length; x++) {
-        temp.getPixelWriter().setColor(x, y, leinwand.leinwand[x][y].getFarbe());
+    WritableImage temp = new WritableImage(leinwand.leinwand[0].length, leinwand.leinwand.length);
+    for (int y=0; y<(leinwand.leinwand.length); y++) {
+      for (int x=0; x<(leinwand.leinwand[y].length); x++) {
+        try {
+          temp.getPixelWriter().setColor(x, y, leinwand.leinwand[y][x].getFarbe());
+        } catch(Exception e) {
+          System.out.println("Index Error accessing data x:" + x + " y:" + y + "\n Even though height is " + leinwand.leinwand.length + " and width " + leinwand.leinwand[y].length);
+        }
       }
     }
     Image actual = new ImageView(temp).getImage();
