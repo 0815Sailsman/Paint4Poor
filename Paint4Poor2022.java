@@ -28,6 +28,7 @@ public class Paint4Poor2022 extends Application {
   private Button save_button = new Button();
   private Button load_button = new Button();
   private Button invert_colors_button = new Button();
+  private Button delete_all_pixels_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -74,10 +75,18 @@ public class Paint4Poor2022 extends Application {
     invert_colors_button.setOnAction(
     (event) -> {invert_colors_button_action(event);} 
     );
-    invert_colors_button.setText("Invet all colors");
+    invert_colors_button.setText("Invert all colors");
     invert_colors_button.setLayoutX(550);
     invert_colors_button.setLayoutY(250);
     root.getChildren().add(invert_colors_button);
+    
+    delete_all_pixels_button.setOnAction(
+    (event) -> {delete_all_pixels_button_action(event);} 
+    );
+    delete_all_pixels_button.setText("Clear");
+    delete_all_pixels_button.setLayoutX(550);
+    delete_all_pixels_button.setLayoutY(300);
+    root.getChildren().add(delete_all_pixels_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -123,9 +132,7 @@ public class Paint4Poor2022 extends Application {
   }
   
   public void load_button_action(Event evt) {
-    if (root.getChildren().size() > comps_in_pane) {
-     root.getChildren().remove(260, root.getChildren().size()); 
-    }
+    delete_all_pixels();
     System.out.println(root.getChildren().size());
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Open Resource File");
@@ -143,6 +150,16 @@ public class Paint4Poor2022 extends Application {
   
   public void invert_colors_button_action(Event evt) {
     leinwand.invert();
+  }
+  
+  public void delete_all_pixels_button_action(Event evt) {
+    delete_all_pixels();
+  }
+  
+  public void delete_all_pixels() {
+    if (root.getChildren().size() > comps_in_pane) {
+     root.getChildren().remove(6, root.getChildren().size()); 
+    }
   }
 
   // Ende Methoden
