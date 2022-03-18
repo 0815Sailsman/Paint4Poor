@@ -27,7 +27,9 @@ public class Paint4Poor2022 extends Application {
   private Leinwand leinwand = new Leinwand(16, 48, colorPicker);
   private Button save_button = new Button();
   private Button load_button = new Button();
+  private Button invert_colors_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
+  private String selected_filetype = ".png";
   private int comps_in_pane;
   
   public void start(Stage primaryStage) { 
@@ -54,7 +56,8 @@ public class Paint4Poor2022 extends Application {
     filetype_button.setLayoutY(200);
     EventHandler<ActionEvent> menuItemEvent = new EventHandler<ActionEvent>() {
         public void handle(ActionEvent e) {
-            System.out.println(((MenuItem)e.getSource()).getText() + " selected");
+            selected_filetype = ((MenuItem)e.getSource()).getText();
+            System.out.println(selected_filetype);
         }
     };
     MenuItem pngMenu = new MenuItem(".png");
@@ -67,6 +70,14 @@ public class Paint4Poor2022 extends Application {
     colorPicker.setLayoutX(550);
     colorPicker.setLayoutY(50);
     root.getChildren().add(colorPicker);
+    
+    invert_colors_button.setOnAction(
+    (event) -> {invert_colors_button_action(event);} 
+    );
+    invert_colors_button.setText("Invet all colors");
+    invert_colors_button.setLayoutX(550);
+    invert_colors_button.setLayoutY(250);
+    root.getChildren().add(invert_colors_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -100,11 +111,13 @@ public class Paint4Poor2022 extends Application {
       }
     }
     Image actual = new ImageView(temp).getImage();
-    File outputFile = new File("saved.png");
+    File outputFile = new File("saved" + selected_filetype);
+    System.out.println(outputFile.getName());
     BufferedImage bImage = SwingFXUtils.fromFXImage(actual, null);
     try {
-      ImageIO.write(bImage, "png", outputFile);
+      ImageIO.write(bImage, selected_filetype.substring(1), outputFile);
     } catch (IOException e) {
+      System.out.println("Error saving");
       throw new RuntimeException(e);
     }
   }
@@ -127,6 +140,11 @@ public class Paint4Poor2022 extends Application {
       leinwand.draw_to(root);
     }
   }  
+  
+  public void invert_colors_button_action(Event evt) {
+    leinwand.invert();
+  }
+
   // Ende Methoden
 
 } 

@@ -85,5 +85,14 @@ public class Leinwand {
       }
     }
   }
+  
+  public void invert() {
+   for (int y=0; y<leinwand.length; y++) {
+     for (int x=0; x<leinwand[y].length; x++) {
+       leinwand[y][x].setFarbe(leinwand[y][x].getFarbe().invert());
+       this.leinwand[y][x].setStyle(this.grundStyle + "-fx-background-color: #" + leinwand[y][x].getFarbe().toString().substring(2)+";");
+     }
+   } 
+  }
 }
 
