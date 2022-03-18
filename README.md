@@ -8,6 +8,7 @@ Features and goals:
 - [ ] Load / save with selectable file types
 - [ ] Custom file type
 - [X] Invert color
+- [X] Delete all pixels
 - [ ] Change canvas size
 - [ ] Flip
 - [ ] Mirror
