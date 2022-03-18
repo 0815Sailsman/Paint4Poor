@@ -9,7 +9,7 @@ Features and goals:
 - [ ] Custom file type
 - [X] Invert color
 - [X] Delete all pixels
-- [ ] Change canvas size
+- [X] Change canvas size and create new one
 - [ ] Flip
 - [ ] Mirror
 - [ ] Draw shapes
