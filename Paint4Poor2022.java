@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.event.*;
 import javafx.scene.input.*;
 import javafx.scene.control.ColorPicker;
@@ -18,7 +19,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-
+import javafx.scene.layout.GridPane;
+import javafx.scene.control.TextField;
+import java.util.*;
 
 public class Paint4Poor2022 extends Application {
   private Pane root;
@@ -29,6 +32,7 @@ public class Paint4Poor2022 extends Application {
   private Button load_button = new Button();
   private Button invert_colors_button = new Button();
   private Button delete_all_pixels_button = new Button();
+  private Button new_canvas_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -87,6 +91,14 @@ public class Paint4Poor2022 extends Application {
     delete_all_pixels_button.setLayoutX(550);
     delete_all_pixels_button.setLayoutY(300);
     root.getChildren().add(delete_all_pixels_button);
+    
+    new_canvas_button.setOnAction(
+    (event) -> {new_canvas_button_action(event);} 
+    );
+    new_canvas_button.setText("New");
+    new_canvas_button.setLayoutX(550);
+    new_canvas_button.setLayoutY(350);
+    root.getChildren().add(new_canvas_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -158,7 +170,51 @@ public class Paint4Poor2022 extends Application {
   
   public void delete_all_pixels() {
     if (root.getChildren().size() > comps_in_pane) {
-     root.getChildren().remove(6, root.getChildren().size()); 
+     root.getChildren().remove(comps_in_pane+1, root.getChildren().size()); 
+    }
+  }
+  
+  public void new_canvas_button_action(Event evt) {
+    int height;
+    int width;
+    Dialog<int[]> dialog = new Dialog<>();
+    dialog.setTitle("New Canvas");
+    dialog.setHeaderText("Enter the dimensions of the new canvas. \n");
+    dialog.setResizable(true);
+     
+    Label label1 = new Label("Height: ");
+    Label label2 = new Label("Width: ");
+    TextField nr1 = new TextField();
+    TextField nr2 = new TextField();
+             
+    GridPane grid = new GridPane();
+    grid.add(label1, 1, 1);
+    grid.add(nr1, 2, 1);
+    grid.add(label2, 1, 2);
+    grid.add(nr2, 2, 2);
+    dialog.getDialogPane().setContent(grid);
+             
+    ButtonType buttonTypeOk = new ButtonType("Okay", ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+     
+
+    // Convert the result to a username-password-pair when the login button is clicked.
+    dialog.setResultConverter(dialogButton -> {
+        if (dialogButton == buttonTypeOk) {
+            int[] res = {Integer.parseInt(nr1.getText()), Integer.parseInt(nr2.getText())};
+            return res;
+            //return new Pair<>(username.getText(), password.getText());
+        }
+        return null;
+    });
+             
+    Optional<int[]> result = dialog.showAndWait();
+             
+    if (result.isPresent()) {
+        height = result.get()[0];
+        width = result.get()[1];
+        leinwand = new Leinwand(width, height, colorPicker);
+        leinwand.draw_to(root);
     }
   }
 
