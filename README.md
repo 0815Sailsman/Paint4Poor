@@ -7,7 +7,7 @@ Features and goals:
 - [x] Image loading
 - [ ] Load / save with selectable file types
 - [ ] Custom file type
-- [ ] Invert color
+- [X] Invert color
 - [ ] Change canvas size
 - [ ] Flip
 - [ ] Mirror
