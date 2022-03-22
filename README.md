@@ -11,5 +11,5 @@ Features and goals:
 - [X] Delete all pixels
 - [X] Change canvas size and create new one
 - [X] Turn 90°
-- [ ] Mirror
+- [X] Mirror (along both axes)
 - [ ] Draw shapes
