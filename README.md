@@ -12,4 +12,6 @@ Features and goals:
 - [X] Change canvas size and create new one
 - [X] Turn 90°
 - [X] Mirror (along both axes)
+- [ ] Select area
+- [ ] Fill area with color
 - [ ] Draw shapes
