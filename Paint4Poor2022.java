@@ -34,6 +34,7 @@ public class Paint4Poor2022 extends Application {
   private Button delete_all_pixels_button = new Button();
   private Button new_canvas_button = new Button();
   private Button turn_90_button = new Button();
+  private Button mirror_along_y_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -108,6 +109,14 @@ public class Paint4Poor2022 extends Application {
     turn_90_button.setLayoutX(550);
     turn_90_button.setLayoutY(400);
     root.getChildren().add(turn_90_button);
+    
+    mirror_along_y_button.setOnAction(
+    (event) -> {mirror_along_y_button_action(event);} 
+    );
+    mirror_along_y_button.setText("Mirror along y");
+    mirror_along_y_button.setLayoutX(500);
+    mirror_along_y_button.setLayoutY(450);
+    root.getChildren().add(mirror_along_y_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -228,25 +237,16 @@ public class Paint4Poor2022 extends Application {
   }
   
   public void turn_90_button_action(Event evt) {
-    Leinwand lw = new Leinwand(leinwand.leinwand.length, leinwand.leinwand[0].length, colorPicker);
-    System.out.println(lw.leinwand.length);
-    System.out.println(lw.leinwand[0].length);
     leinwand.turn_90();
-    /*
-    // Leinwand auf lw übertragen
-    for (int y=0; y<lw.leinwand.length; y++) {
-      for (int x=0; x<lw.leinwand[0].length; x++) {
-        System.out.println(x);
-        System.out.println(y);
-        System.out.println(leinwand.leinwand[y][x].getFarbe().toString());
-        lw.leinwand[y][x].setFarbe(leinwand.leinwand[y][x].getFarbe());
-      }
-    }
-    leinwand = lw;*/
     delete_all_pixels();
     leinwand.draw_to(root);
   }
+  
+  public void mirror_along_y_button_action(Event evt) {
+    leinwand.mirror_along_y();
+    delete_all_pixels();
+    leinwand.draw_to(root);    
+  }
   // Ende Methoden
-
 } 
 
