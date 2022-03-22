@@ -10,6 +10,6 @@ Features and goals:
 - [X] Invert color
 - [X] Delete all pixels
 - [X] Change canvas size and create new one
-- [ ] Flip
+- [X] Turn 90°
 - [ ] Mirror
 - [ ] Draw shapes
