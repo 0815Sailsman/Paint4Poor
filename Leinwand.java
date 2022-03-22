@@ -143,5 +143,29 @@ public class Leinwand {
     }
     this.leinwand = temp;
   }
+  
+  public void mirror_along_x() {
+    Pixel[][] temp = new Pixel[this.leinwand.length][this.leinwand[0].length];
+    double pixelbreite = this.max_widht / temp[0].length;
+    double pixelhöhe = this.max_height / temp.length;
+    String pixelStyle;
+      
+    for (int x=0; x<this.leinwand[0].length; x++) {
+      for (int y=this.leinwand.length-1; y>=0; y--) {
+        temp[y][x] = new Pixel(x, y);
+        temp[y][x].setLayoutX(this.linkerRand + x * pixelbreite);
+        temp[y][x].setLayoutY(this.obererRand + y * pixelhöhe);
+        temp[y][x].setPrefHeight(pixelhöhe);
+        temp[y][x].setPrefWidth(pixelbreite);
+        pixelStyle = this.grundStyle + "-fx-background-color: #" + this.leinwand[Math.abs(y-this.leinwand.length+1)][x].getFarbe().toString().substring(2)+";";
+        temp[y][x].setStyle(pixelStyle);                      
+        temp[y][x].setFarbe(this.leinwand[Math.abs(y-this.leinwand.length+1)][x].getFarbe());
+        temp[y][x].setOnAction(
+        (event) -> {this.leinwand_Action(event);} 
+        );
+      }
+    }
+    this.leinwand = temp;
+  }
 }
 

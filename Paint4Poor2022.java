@@ -35,6 +35,7 @@ public class Paint4Poor2022 extends Application {
   private Button new_canvas_button = new Button();
   private Button turn_90_button = new Button();
   private Button mirror_along_y_button = new Button();
+  private Button mirror_along_x_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -117,6 +118,14 @@ public class Paint4Poor2022 extends Application {
     mirror_along_y_button.setLayoutX(500);
     mirror_along_y_button.setLayoutY(450);
     root.getChildren().add(mirror_along_y_button);
+    
+    mirror_along_x_button.setOnAction(
+    (event) -> {mirror_along_x_button_action(event);} 
+    );
+    mirror_along_x_button.setText("Mirror along x");
+    mirror_along_x_button.setLayoutX(600);
+    mirror_along_x_button.setLayoutY(450);
+    root.getChildren().add(mirror_along_x_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -244,6 +253,12 @@ public class Paint4Poor2022 extends Application {
   
   public void mirror_along_y_button_action(Event evt) {
     leinwand.mirror_along_y();
+    delete_all_pixels();
+    leinwand.draw_to(root);    
+  }
+  
+  public void mirror_along_x_button_action(Event evt) {
+    leinwand.mirror_along_x();
     delete_all_pixels();
     leinwand.draw_to(root);    
   }
