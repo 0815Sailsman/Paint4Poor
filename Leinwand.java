@@ -4,6 +4,7 @@ import javafx.event.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.image.*;
+import java.lang.Math.*;
 
 
 public class Leinwand {
@@ -93,6 +94,30 @@ public class Leinwand {
        this.leinwand[y][x].setStyle(this.grundStyle + "-fx-background-color: #" + leinwand[y][x].getFarbe().toString().substring(2)+";");
      }
    } 
+  }
+  
+  public void turn_90() {
+    Pixel[][] temp = new Pixel[this.leinwand[0].length][this.leinwand.length];
+    double pixelbreite = this.max_widht / temp[0].length;
+    double pixelhöhe = this.max_height / temp.length;
+    String pixelStyle;
+      
+    for (int x=0; x<this.leinwand[0].length; x++) {
+      for (int y=this.leinwand.length-1; y>=0; y--) {
+        temp[x][y] = new Pixel(y, x);
+        temp[x][y].setLayoutX(this.linkerRand + y * pixelbreite);
+        temp[x][y].setLayoutY(this.obererRand + x * pixelhöhe);
+        temp[x][y].setPrefHeight(pixelhöhe);
+        temp[x][y].setPrefWidth(pixelbreite);
+        pixelStyle = this.grundStyle + "-fx-background-color: #" + leinwand[Math.abs((y-this.leinwand.length)+1)][x].getFarbe().toString().substring(2)+";";
+        temp[x][y].setStyle(pixelStyle);                      
+        temp[x][y].setFarbe(leinwand[Math.abs((y-this.leinwand.length)+1)][x].getFarbe());
+        temp[x][y].setOnAction(
+        (event) -> {this.leinwand_Action(event);} 
+        );
+      }
+    }
+    this.leinwand = temp;
   }
 }
 
