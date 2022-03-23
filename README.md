@@ -11,7 +11,7 @@ Features and goals:
 - [X] Turn 90°
 - [X] Mirror (along both axes)
 - [X] Sepcify filename when saving
-- [ ] Select area
+- [X] Select area
 - [ ] Fill area with color
 - [ ] Draw shapes
 - [X] Pipette (select a color and load it into the colorpicker)
