@@ -42,7 +42,7 @@ public class Paint4Poor2022 extends Application {
   
   public void start(Stage primaryStage) { 
     root = new Pane();
-    Scene scene = new Scene(root, 700, 508);
+    Scene scene = new Scene(root, 900, 508);
     // Anfang Komponenten
     save_button.setOnAction(
     (event) -> {save_button_action(event);} 
@@ -159,7 +159,7 @@ public class Paint4Poor2022 extends Application {
       }
     }
     Image actual = new ImageView(temp).getImage();
-    File outputFile = new File("saved" + selected_filetype);
+    File outputFile = new File(get_saved_file_name() + selected_filetype);
     System.out.println(outputFile.getName());
     BufferedImage bImage = SwingFXUtils.fromFXImage(actual, null);
     try {
@@ -262,6 +262,14 @@ public class Paint4Poor2022 extends Application {
     delete_all_pixels();
     leinwand.draw_to(root);    
   }
+  
+  public String get_saved_file_name() {
+    TextInputDialog td = new TextInputDialog();
+    td.setHeaderText("Enter filename without filetype");
+    td.showAndWait();
+    return td.getEditor().getText();
+  }
+
   // Ende Methoden
 } 
 
