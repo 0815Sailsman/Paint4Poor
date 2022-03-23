@@ -16,6 +16,8 @@ public class Leinwand {
   private int obererRand;
   private final double max_widht = 480.0;
   private final double max_height = 480.0;
+  private boolean override_picker = false;
+  public Color last_color = null;
 
   public Leinwand(int spalten, int zeilen, ColorPicker picker) {
     double pixelbreite = this.max_widht / spalten;
@@ -46,8 +48,13 @@ public class Leinwand {
   public void leinwand_Action(Event evt) {
     int x = ((Pixel) evt.getSource()).getX();
     int y = ((Pixel) evt.getSource()).getY();
-    this.leinwand[y][x].setFarbe(this.picker.getValue());
-    this.leinwand[y][x].setStyle(this.grundStyle + "-fx-background-color: #" + leinwand[y][x].getFarbe().toString().substring(2)+";"); 
+    if (!override_picker) {
+      this.leinwand[y][x].setFarbe(this.picker.getValue());
+      this.leinwand[y][x].setStyle(this.grundStyle + "-fx-background-color: #" + this.leinwand[y][x].getFarbe().toString().substring(2)+";");       
+    } else {
+      picker.setValue(this.leinwand[y][x].getFarbe()); 
+      toggle_picker();    
+      }
   } // end of button1_Action
   
   public void draw_to(Pane root) {
@@ -167,5 +174,14 @@ public class Leinwand {
     }
     this.leinwand = temp;
   }
+  
+  public void toggle_picker() {
+    if (override_picker) {
+      override_picker = false;
+    } else {
+      override_picker = true;
+    }
+  }
+
 }
 

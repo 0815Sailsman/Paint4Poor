@@ -36,6 +36,7 @@ public class Paint4Poor2022 extends Application {
   private Button turn_90_button = new Button();
   private Button mirror_along_y_button = new Button();
   private Button mirror_along_x_button = new Button();
+  private Button pick_color_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -126,6 +127,14 @@ public class Paint4Poor2022 extends Application {
     mirror_along_x_button.setLayoutX(600);
     mirror_along_x_button.setLayoutY(450);
     root.getChildren().add(mirror_along_x_button);
+    
+    pick_color_button.setOnAction(
+    (event) -> {pick_color_button_action(event);} 
+    );
+    pick_color_button.setText("Pick color");
+    pick_color_button.setLayoutX(700);
+    pick_color_button.setLayoutY(450);
+    root.getChildren().add(pick_color_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -268,6 +277,10 @@ public class Paint4Poor2022 extends Application {
     td.setHeaderText("Enter filename without filetype");
     td.showAndWait();
     return td.getEditor().getText();
+  }
+  
+  public void pick_color_button_action(Event evt) {
+    leinwand.toggle_picker();
   }
 
   // Ende Methoden
