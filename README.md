@@ -5,8 +5,6 @@ Features and goals:
 - [x] Basic painting
 - [x] Image saving
 - [x] Image loading
-- [ ] Load / save with selectable file types
-- [ ] Custom file type
 - [X] Invert color
 - [X] Delete all pixels
 - [X] Change canvas size and create new one
@@ -15,3 +13,6 @@ Features and goals:
 - [ ] Select area
 - [ ] Fill area with color
 - [ ] Draw shapes
+- [ ] Pipette (select a color and load it into the colorpicker)
+- [ ] Load / save with selectable file types
+- [ ] Custom file type
