@@ -27,7 +27,7 @@ public class Paint4Poor2022 extends Application {
   private Pane root;
   private Stage mainStage;
   ColorPicker colorPicker = new ColorPicker();
-  private Leinwand leinwand = new Leinwand(16, 48, colorPicker);
+  private Leinwand leinwand = new Leinwand(5, 5, colorPicker);
   private Button save_button = new Button();
   private Button load_button = new Button();
   private Button invert_colors_button = new Button();
@@ -157,6 +157,7 @@ public class Paint4Poor2022 extends Application {
   } 
 
   public void save_button_action(Event evt) {
+    this.leinwand.unselect_all();
     WritableImage temp = new WritableImage(leinwand.leinwand[0].length, leinwand.leinwand.length);
     for (int y=0; y<(leinwand.leinwand.length); y++) {
       for (int x=0; x<(leinwand.leinwand[y].length); x++) {

@@ -5,6 +5,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.image.*;
 import java.lang.Math.*;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 
 
 public class Leinwand {
@@ -18,26 +20,30 @@ public class Leinwand {
   private final double max_height = 480.0;
   private boolean override_picker = false;
   public Color last_color = null;
+  private Pixel drag_start_pixel;
+  private Pixel drag_end_pixel;
 
   public Leinwand(int spalten, int zeilen, ColorPicker picker) {
     double pixelbreite = this.max_widht / spalten;
     double pixelhöhe = this.max_height / zeilen;
     this.linkerRand = 10;
     this.obererRand = 10;
-    String pixelStyle;
+    String pixelStyle = "";
     this.leinwand = new Pixel[zeilen][spalten];
     for (int y = 0; y < zeilen; y++) {
       for (int x = 0; x < spalten; x++) {
-        this.leinwand[y][x] = new Pixel(x, y);
-        this.leinwand[y][x].setLayoutX(this.linkerRand + x * pixelbreite);
-        this.leinwand[y][x].setLayoutY(this.obererRand + y * pixelhöhe);
-        this.leinwand[y][x].setPrefHeight(pixelhöhe);
-        this.leinwand[y][x].setPrefWidth(pixelbreite);
-        pixelStyle = this.grundStyle + "-fx-background-color: #" + leinwand[y][x].getFarbe().toString().substring(2)+";";
-        this.leinwand[y][x].setStyle(pixelStyle);                      
-        this.leinwand[y][x].setOnAction(
+        Pixel tmpxl = new Pixel(x, y);
+        tmpxl.setLayoutX(this.linkerRand + x * pixelbreite);
+        tmpxl.setLayoutY(this.obererRand + y * pixelhöhe);
+        tmpxl.setPrefHeight(pixelhöhe);
+        tmpxl.setPrefWidth(pixelbreite);
+        pixelStyle = this.grundStyle + "-fx-background-color: #" + tmpxl.getFarbe().toString().substring(2)+";";
+        tmpxl.setStyle(pixelStyle);                      
+        tmpxl.setOnAction(
         (event) -> {this.leinwand_Action(event);} 
         );
+        apply_drag_events_to(tmpxl);
+        this.leinwand[y][x] = tmpxl;
       }
     }
     this.picker = picker;
@@ -48,6 +54,7 @@ public class Leinwand {
   public void leinwand_Action(Event evt) {
     int x = ((Pixel) evt.getSource()).getX();
     int y = ((Pixel) evt.getSource()).getY();
+    unselect_all();
     if (!override_picker) {
       this.leinwand[y][x].setFarbe(this.picker.getValue());
       this.leinwand[y][x].setStyle(this.grundStyle + "-fx-background-color: #" + this.leinwand[y][x].getFarbe().toString().substring(2)+";");       
@@ -55,7 +62,7 @@ public class Leinwand {
       picker.setValue(this.leinwand[y][x].getFarbe()); 
       toggle_picker();    
       }
-  } // end of button1_Action
+  }
   
   public void draw_to(Pane root) {
     for (int i=0; i<(this.leinwand.length); i++) {
@@ -79,22 +86,25 @@ public class Leinwand {
     for (int y=0; y<(int) img.getHeight(); y++) {
       System.out.println(y);
       for (int x=0; x<(int) img.getWidth(); x++) {
-        this.leinwand[y][x] = new Pixel(y, x);
-        this.leinwand[y][x].setFarbe(img.getPixelReader().getColor(x, y));
-        this.leinwand[y][x].setLayoutX(this.linkerRand + x * pixelbreite);
-        this.leinwand[y][x].setLayoutY(this.obererRand + y * pixelhöhe);
-        this.leinwand[y][x].setPrefHeight(pixelbreite);
-        this.leinwand[y][x].setPrefWidth(pixelbreite);
-        pixelStyle = this.grundStyle + "-fx-background-color: #" + leinwand[y][x].getFarbe().toString().substring(2)+";";
-        this.leinwand[y][x].setStyle(pixelStyle);                      
-        this.leinwand[y][x].setOnAction(
+        Pixel tmpxl = new Pixel(y, x);
+        tmpxl.setFarbe(img.getPixelReader().getColor(x, y));
+        tmpxl.setLayoutX(this.linkerRand + x * pixelbreite);
+        tmpxl.setLayoutY(this.obererRand + y * pixelhöhe);
+        tmpxl.setPrefHeight(pixelbreite);
+        tmpxl.setPrefWidth(pixelbreite);
+        pixelStyle = this.grundStyle + "-fx-background-color: #" + tmpxl.getFarbe().toString().substring(2)+";";
+        tmpxl.setStyle(pixelStyle);                      
+        tmpxl.setOnAction(
         (event) -> {this.leinwand_Action(event);} 
         );
+        apply_drag_events_to(tmpxl);
+        this.leinwand[y][x] = tmpxl;
       }
     }
   }
   
   public void invert() {
+    unselect_all();
    for (int y=0; y<leinwand.length; y++) {
      for (int x=0; x<leinwand[y].length; x++) {
        leinwand[y][x].setFarbe(leinwand[y][x].getFarbe().invert());
@@ -111,17 +121,19 @@ public class Leinwand {
       
     for (int x=0; x<this.leinwand[0].length; x++) {
       for (int y=this.leinwand.length-1; y>=0; y--) {
-        temp[x][y] = new Pixel(y, x);
-        temp[x][y].setLayoutX(this.linkerRand + y * pixelbreite);
-        temp[x][y].setLayoutY(this.obererRand + x * pixelhöhe);
-        temp[x][y].setPrefHeight(pixelhöhe);
-        temp[x][y].setPrefWidth(pixelbreite);
+        Pixel tmpxl = new Pixel(y, x);
+        tmpxl.setLayoutX(this.linkerRand + y * pixelbreite);
+        tmpxl.setLayoutY(this.obererRand + x * pixelhöhe);
+        tmpxl.setPrefHeight(pixelhöhe);
+        tmpxl.setPrefWidth(pixelbreite);
         pixelStyle = this.grundStyle + "-fx-background-color: #" + this.leinwand[Math.abs((y-this.leinwand.length)+1)][x].getFarbe().toString().substring(2)+";";
-        temp[x][y].setStyle(pixelStyle);                      
-        temp[x][y].setFarbe(this.leinwand[Math.abs((y-this.leinwand.length)+1)][x].getFarbe());
-        temp[x][y].setOnAction(
+        tmpxl.setStyle(pixelStyle);                      
+        tmpxl.setFarbe(this.leinwand[Math.abs((y-this.leinwand.length)+1)][x].getFarbe());
+        tmpxl.setOnAction(
         (event) -> {this.leinwand_Action(event);} 
         );
+        apply_drag_events_to(tmpxl);
+        temp[x][y] = tmpxl;
       }
     }
     this.leinwand = temp;
@@ -135,17 +147,19 @@ public class Leinwand {
       
     for (int y=0; y<this.leinwand.length; y++) {
       for (int x=this.leinwand[0].length-1; x>=0; x--) {
-        temp[y][x] = new Pixel(x, y);
-        temp[y][x].setLayoutX(this.linkerRand + x * pixelbreite);
-        temp[y][x].setLayoutY(this.obererRand + y * pixelhöhe);
-        temp[y][x].setPrefHeight(pixelhöhe);
-        temp[y][x].setPrefWidth(pixelbreite);
+        Pixel tmpxl = new Pixel(x, y);
+        tmpxl.setLayoutX(this.linkerRand + x * pixelbreite);
+        tmpxl.setLayoutY(this.obererRand + y * pixelhöhe);
+        tmpxl.setPrefHeight(pixelhöhe);
+        tmpxl.setPrefWidth(pixelbreite);
         pixelStyle = this.grundStyle + "-fx-background-color: #" + this.leinwand[y][Math.abs(x-this.leinwand[0].length+1)].getFarbe().toString().substring(2)+";";
-        temp[y][x].setStyle(pixelStyle);                      
-        temp[y][x].setFarbe(this.leinwand[y][Math.abs(x-this.leinwand[0].length+1)].getFarbe());
-        temp[y][x].setOnAction(
+        tmpxl.setStyle(pixelStyle);                      
+        tmpxl.setFarbe(this.leinwand[y][Math.abs(x-this.leinwand[0].length+1)].getFarbe());
+        tmpxl.setOnAction(
         (event) -> {this.leinwand_Action(event);} 
         );
+        apply_drag_events_to(tmpxl);
+        temp[y][x] = tmpxl;
       }
     }
     this.leinwand = temp;
@@ -159,17 +173,19 @@ public class Leinwand {
       
     for (int x=0; x<this.leinwand[0].length; x++) {
       for (int y=this.leinwand.length-1; y>=0; y--) {
-        temp[y][x] = new Pixel(x, y);
-        temp[y][x].setLayoutX(this.linkerRand + x * pixelbreite);
-        temp[y][x].setLayoutY(this.obererRand + y * pixelhöhe);
-        temp[y][x].setPrefHeight(pixelhöhe);
-        temp[y][x].setPrefWidth(pixelbreite);
+        Pixel tmpxl = new Pixel(x, y);
+        tmpxl.setLayoutX(this.linkerRand + x * pixelbreite);
+        tmpxl.setLayoutY(this.obererRand + y * pixelhöhe);
+        tmpxl.setPrefHeight(pixelhöhe);
+        tmpxl.setPrefWidth(pixelbreite);
         pixelStyle = this.grundStyle + "-fx-background-color: #" + this.leinwand[Math.abs(y-this.leinwand.length+1)][x].getFarbe().toString().substring(2)+";";
-        temp[y][x].setStyle(pixelStyle);                      
-        temp[y][x].setFarbe(this.leinwand[Math.abs(y-this.leinwand.length+1)][x].getFarbe());
-        temp[y][x].setOnAction(
+        tmpxl.setStyle(pixelStyle);                      
+        tmpxl.setFarbe(this.leinwand[Math.abs(y-this.leinwand.length+1)][x].getFarbe());
+        tmpxl.setOnAction(
         (event) -> {this.leinwand_Action(event);} 
         );
+        apply_drag_events_to(tmpxl);
+        temp[y][x] = tmpxl;
       }
     }
     this.leinwand = temp;
@@ -181,6 +197,98 @@ public class Leinwand {
     } else {
       override_picker = true;
     }
+  }
+  
+  public void select_area() {
+    System.out.println("from " + drag_start_pixel.getX() + " " + drag_start_pixel.getY()); 
+    System.out.println("to " + drag_end_pixel.getX() + " " + drag_end_pixel.getY());
+    Pixel leftmost;
+    Pixel rightmost;
+    Pixel top;
+    Pixel bot;
+    
+    // Sort for x
+    if (drag_start_pixel.getX() < drag_end_pixel.getX()) {
+      leftmost = drag_start_pixel;
+      rightmost = drag_end_pixel;
+    } else {
+      rightmost = drag_start_pixel;
+      leftmost = drag_end_pixel;
+    }
+    // Sort for y
+    if (drag_start_pixel.getY() < drag_end_pixel.getY()) {
+      top = drag_start_pixel;
+      bot = drag_end_pixel;
+    } else {
+      bot = drag_start_pixel;
+      top = drag_end_pixel;
+    }
+    
+    for (int y=top.getY(); y<=bot.getY(); y++) {
+      for (int x=leftmost.getX(); x<=rightmost.getX(); x++) {
+        this.leinwand[y][x].set_selected(true);
+      }
+    }
+  }
+  
+  public void unselect_all() {
+    for (int y = 0; y<this.leinwand.length; y++) {
+      for (int x = 0; x<this.leinwand[y].length; x++) {
+        this.leinwand[y][x].set_selected(false);
+      }
+    }
+  }
+  
+  public void apply_drag_events_to(Pixel pxl) {
+    // Combined with setOnMouseDragged somehow necessary for differentiating
+    // between press and drag
+    /*
+    tmpxl.setOnMousePressed(new EventHandler<MouseEvent>() { 
+      public void handle(MouseEvent evt) { 
+        System.out.println("Hello Press"); 
+        System.out.println(((Pixel) evt.getSource()).getX());  
+        System.out.println(((Pixel) evt.getSource()).getY());
+        //evt.setDragDetect(true);
+      } 
+    });
+    */        
+    // Initiate drag, used for keeping track of original Pixel
+    pxl.setOnMouseDragged(new EventHandler<MouseEvent>() { 
+      public void handle(MouseEvent evt) { 
+        System.out.println("Hello Drag"); 
+        System.out.println(((Pixel) evt.getSource()).getX());  
+        System.out.println(((Pixel) evt.getSource()).getY());
+        drag_start_pixel = pxl;
+      } 
+    });
+    // Necessary for somehow "keeping the drag alive"
+    pxl.setOnDragDetected(new EventHandler<MouseEvent>() { 
+      public void handle(MouseEvent evt) { 
+        System.out.println("Drag"); 
+        pxl.startFullDrag();
+      } 
+    });
+    
+    // Get the nodes (coordinates of them) that are being passed over during
+    // during the movement
+    pxl.setOnMouseDragOver(new EventHandler<MouseEvent>() { 
+      public void handle(MouseEvent evt) { 
+        System.out.println("Drag Over"); 
+        System.out.println(((Pixel) evt.getSource()).getX());  
+        System.out.println(((Pixel) evt.getSource()).getY());
+      } 
+    });
+    
+    // On drag stop, get final x and y from here (or just get node directly)
+    pxl.setOnMouseDragReleased(new EventHandler<MouseEvent>() { 
+      public void handle(MouseEvent evt) { 
+        System.out.println("Goodbye Drag"); 
+        System.out.println(((Pixel) evt.getSource()).getX());  
+        System.out.println(((Pixel) evt.getSource()).getY());
+        drag_end_pixel = pxl;
+        select_area();
+      } 
+    });
   }
 
 }
