@@ -14,6 +14,6 @@ Features and goals:
 - [ ] Select area
 - [ ] Fill area with color
 - [ ] Draw shapes
-- [ ] Pipette (select a color and load it into the colorpicker)
+- [X] Pipette (select a color and load it into the colorpicker)
 - [ ] Load / save with selectable file types
 - [ ] Custom file type
