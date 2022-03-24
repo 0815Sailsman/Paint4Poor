@@ -12,7 +12,7 @@ Features and goals:
 - [X] Mirror (along both axes)
 - [X] Sepcify filename when saving
 - [X] Select area
-- [ ] Fill area with color
+- [X] Fill area with color
 - [ ] Draw shapes
 - [X] Pipette (select a color and load it into the colorpicker)
 - [ ] Load / save with selectable file types
