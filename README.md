@@ -13,6 +13,7 @@ Features and goals:
 - [X] Sepcify filename when saving
 - [X] Select area
 - [X] Fill area with color
+- [X] Paint with cursor by dragging
 - [ ] Draw shapes
 - [X] Pipette (select a color and load it into the colorpicker)
 - [ ] Load / save with selectable file types
