@@ -38,6 +38,8 @@ public class Paint4Poor2022 extends Application {
   private Button mirror_along_x_button = new Button();
   private Button pick_color_button = new Button();
   private Button fill_area_button = new Button();
+  private Button selection_mode_paint_button = new Button();
+  private Button selection_mode_select_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -144,6 +146,22 @@ public class Paint4Poor2022 extends Application {
     fill_area_button.setLayoutX(700);
     fill_area_button.setLayoutY(400);
     root.getChildren().add(fill_area_button);
+    
+    selection_mode_paint_button.setOnAction(
+    (event) -> {selection_mode_paint_button_action(event);} 
+    );
+    selection_mode_paint_button.setText("Paint mode");
+    selection_mode_paint_button.setLayoutX(750);
+    selection_mode_paint_button.setLayoutY(50);
+    root.getChildren().add(selection_mode_paint_button);
+    
+    selection_mode_select_button.setOnAction(
+    (event) -> {selection_mode_select_button_action(event);} 
+    );
+    selection_mode_select_button.setText("Select mode");
+    selection_mode_select_button.setLayoutX(750);
+    selection_mode_select_button.setLayoutY(100);
+    root.getChildren().add(selection_mode_select_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -295,6 +313,14 @@ public class Paint4Poor2022 extends Application {
   
   public void fill_area_button_action(Event evt) {
     leinwand.fill_area();
+  }
+  
+  public void selection_mode_paint_button_action(Event evt) {
+    leinwand.set_selection_mode(SelectionMode.PAINT_MODE);
+  }
+  
+  public void selection_mode_select_button_action(Event evt) {
+    leinwand.set_selection_mode(SelectionMode.SELECT_MODE);
   }
   // Ende Methoden
 } 

@@ -23,6 +23,7 @@ public class Leinwand {
   private Pixel drag_start_pixel;
   private Pixel drag_end_pixel;
   private boolean any_selected = false;
+  private int selection_mode = SelectionMode.SELECT_MODE;
 
   public Leinwand(int spalten, int zeilen, ColorPicker picker) {
     double pixelbreite = this.max_widht / spalten;
@@ -242,55 +243,64 @@ public class Leinwand {
     }
   }
   
-  public void apply_drag_events_to(Pixel pxl) {
-    // Combined with setOnMouseDragged somehow necessary for differentiating
-    // between press and drag
-    /*
-    tmpxl.setOnMousePressed(new EventHandler<MouseEvent>() { 
-      public void handle(MouseEvent evt) { 
-        System.out.println("Hello Press"); 
-        System.out.println(((Pixel) evt.getSource()).getX());  
-        System.out.println(((Pixel) evt.getSource()).getY());
-        //evt.setDragDetect(true);
-      } 
-    });
-    */        
+  public void apply_drag_events_to(Pixel pxl) {        
     // Initiate drag, used for keeping track of original Pixel
     pxl.setOnMouseDragged(new EventHandler<MouseEvent>() { 
       public void handle(MouseEvent evt) { 
-        System.out.println("Hello Drag"); 
-        System.out.println(((Pixel) evt.getSource()).getX());  
-        System.out.println(((Pixel) evt.getSource()).getY());
-        drag_start_pixel = pxl;
+        if (selection_mode == SelectionMode.SELECT_MODE) {
+          System.out.println("Hello Drag"); 
+          System.out.println(((Pixel) evt.getSource()).getX());  
+          System.out.println(((Pixel) evt.getSource()).getY());
+          drag_start_pixel = pxl;
+        } else if (selection_mode == SelectionMode.PAINT_MODE) {
+            unselect_all();
+            pxl.setFarbe(picker.getValue());
+            pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
+        }
       } 
     });
     
     // Necessary for somehow "keeping the drag alive"
     pxl.setOnDragDetected(new EventHandler<MouseEvent>() { 
       public void handle(MouseEvent evt) { 
-        System.out.println("Drag"); 
         pxl.startFullDrag();
+        if (selection_mode == SelectionMode.SELECT_MODE) {
+          System.out.println("Drag with select");  
+        } else if (selection_mode == SelectionMode.PAINT_MODE) {
+            pxl.setFarbe(picker.getValue());
+            pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
+          }
       } 
     });
     
     // Get the nodes (coordinates of them) that are being passed over during
     // during the movement
     pxl.setOnMouseDragOver(new EventHandler<MouseEvent>() { 
-      public void handle(MouseEvent evt) { 
-        System.out.println("Drag Over"); 
-        System.out.println(((Pixel) evt.getSource()).getX());  
-        System.out.println(((Pixel) evt.getSource()).getY());
+      public void handle(MouseEvent evt) {
+        if (selection_mode == SelectionMode.SELECT_MODE) {
+          System.out.println("Drag Over"); 
+          System.out.println(((Pixel) evt.getSource()).getX());  
+          System.out.println(((Pixel) evt.getSource()).getY());
+        } else if (selection_mode == SelectionMode.PAINT_MODE) {
+            pxl.setFarbe(picker.getValue());
+            pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
+          }
       } 
     });
     
     // On drag stop, get final x and y from here (or just get node directly)
     pxl.setOnMouseDragReleased(new EventHandler<MouseEvent>() { 
       public void handle(MouseEvent evt) { 
-        System.out.println("Goodbye Drag"); 
-        System.out.println(((Pixel) evt.getSource()).getX());  
-        System.out.println(((Pixel) evt.getSource()).getY());
-        drag_end_pixel = pxl;
-        select_area();
+        if (selection_mode == SelectionMode.SELECT_MODE) {
+          System.out.println("Goodbye Drag"); 
+          System.out.println(((Pixel) evt.getSource()).getX());  
+          System.out.println(((Pixel) evt.getSource()).getY());
+          drag_end_pixel = pxl;
+          select_area();
+        } else if (selection_mode == SelectionMode.PAINT_MODE) {
+            pxl.setFarbe(picker.getValue());
+            pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
+          }
       } 
     });
   }
@@ -305,6 +315,10 @@ public class Leinwand {
         }
       }
     }    
+  }
+  
+  public void set_selection_mode(int new_mode) {
+    selection_mode = new_mode;
   }
 }
 
