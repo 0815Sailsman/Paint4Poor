@@ -22,6 +22,7 @@ public class Leinwand {
   public Color last_color = null;
   private Pixel drag_start_pixel;
   private Pixel drag_end_pixel;
+  private boolean any_selected = false;
 
   public Leinwand(int spalten, int zeilen, ColorPicker picker) {
     double pixelbreite = this.max_widht / spalten;
@@ -226,12 +227,14 @@ public class Leinwand {
     
     for (int y=top.getY(); y<=bot.getY(); y++) {
       for (int x=leftmost.getX(); x<=rightmost.getX(); x++) {
+        any_selected = true;
         this.leinwand[y][x].set_selected(true);
       }
     }
   }
   
   public void unselect_all() {
+    any_selected = false;
     for (int y = 0; y<this.leinwand.length; y++) {
       for (int x = 0; x<this.leinwand[y].length; x++) {
         this.leinwand[y][x].set_selected(false);
@@ -261,6 +264,7 @@ public class Leinwand {
         drag_start_pixel = pxl;
       } 
     });
+    
     // Necessary for somehow "keeping the drag alive"
     pxl.setOnDragDetected(new EventHandler<MouseEvent>() { 
       public void handle(MouseEvent evt) { 
@@ -290,6 +294,17 @@ public class Leinwand {
       } 
     });
   }
-
+  
+  public void fill_area() {
+    if (any_selected) {
+      for (int y = 0; y<this.leinwand.length; y++) {
+        for (int x = 0; x<this.leinwand[y].length; x++) {
+          if (this.leinwand[y][x].selected) {
+            this.leinwand[y][x].setFarbe(picker.getValue());
+          }
+        }
+      }
+    }    
+  }
 }
 
