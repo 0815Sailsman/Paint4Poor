@@ -248,14 +248,13 @@ public class Leinwand {
     pxl.setOnMouseDragged(new EventHandler<MouseEvent>() { 
       public void handle(MouseEvent evt) { 
         if (selection_mode == SelectionMode.SELECT_MODE) {
-          System.out.println("Hello Drag"); 
-          System.out.println(((Pixel) evt.getSource()).getX());  
-          System.out.println(((Pixel) evt.getSource()).getY());
           drag_start_pixel = pxl;
         } else if (selection_mode == SelectionMode.PAINT_MODE) {
             unselect_all();
             pxl.setFarbe(picker.getValue());
             pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
+        } else if (selection_mode == SelectionMode.SQUARE_MODE) {
+          drag_start_pixel = pxl;
         }
       } 
     });
@@ -269,7 +268,9 @@ public class Leinwand {
         } else if (selection_mode == SelectionMode.PAINT_MODE) {
             pxl.setFarbe(picker.getValue());
             pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
-          }
+        } else if (selection_mode == SelectionMode.SQUARE_MODE) {
+          System.out.println("Drag for square");
+        }
       } 
     });
     
@@ -279,12 +280,12 @@ public class Leinwand {
       public void handle(MouseEvent evt) {
         if (selection_mode == SelectionMode.SELECT_MODE) {
           System.out.println("Drag Over"); 
-          System.out.println(((Pixel) evt.getSource()).getX());  
-          System.out.println(((Pixel) evt.getSource()).getY());
         } else if (selection_mode == SelectionMode.PAINT_MODE) {
             pxl.setFarbe(picker.getValue());
             pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
-          }
+        } else if (selection_mode == SelectionMode.SQUARE_MODE) {
+          System.out.println("Drag Over for shape");
+        }
       } 
     });
     
@@ -293,14 +294,16 @@ public class Leinwand {
       public void handle(MouseEvent evt) { 
         if (selection_mode == SelectionMode.SELECT_MODE) {
           System.out.println("Goodbye Drag"); 
-          System.out.println(((Pixel) evt.getSource()).getX());  
-          System.out.println(((Pixel) evt.getSource()).getY());
           drag_end_pixel = pxl;
           select_area();
         } else if (selection_mode == SelectionMode.PAINT_MODE) {
             pxl.setFarbe(picker.getValue());
             pxl.setStyle(grundStyle + "-fx-background-color: #" + pxl.getFarbe().toString().substring(2)+";");
-          }
+        } else if (selection_mode == SelectionMode.SQUARE_MODE) {
+          System.out.println("Goodbye Drag for shape"); 
+          drag_end_pixel = pxl;
+          draw_square();
+        }
       } 
     });
   }
@@ -320,5 +323,42 @@ public class Leinwand {
   public void set_selection_mode(int new_mode) {
     selection_mode = new_mode;
   }
+  
+  
+  public void draw_square() {
+    System.out.println("from " + drag_start_pixel.getX() + " " + drag_start_pixel.getY()); 
+    System.out.println("to " + drag_end_pixel.getX() + " " + drag_end_pixel.getY());
+    Pixel leftmost;
+    Pixel rightmost;
+    Pixel top;
+    Pixel bot;
+    
+    // Sort for x
+    if (drag_start_pixel.getX() < drag_end_pixel.getX()) {
+      leftmost = drag_start_pixel;
+      rightmost = drag_end_pixel;
+    } else {
+      rightmost = drag_start_pixel;
+      leftmost = drag_end_pixel;
+    }
+    // Sort for y
+    if (drag_start_pixel.getY() < drag_end_pixel.getY()) {
+      top = drag_start_pixel;
+      bot = drag_end_pixel;
+    } else {
+      bot = drag_start_pixel;
+      top = drag_end_pixel;
+    }
+    
+    for (int y=top.getY(); y<=bot.getY(); y++) {
+      for (int x=leftmost.getX(); x<=rightmost.getX(); x++) {
+        if (y == top.getY() || y == bot.getY() || x == leftmost.getX() || x == rightmost.getX()) {
+          this.leinwand[y][x].setFarbe(picker.getValue());
+          this.leinwand[y][x].setStyle(grundStyle + "-fx-background-color: #" + this.leinwand[y][x].getFarbe().toString().substring(2)+";");
+        }
+      }
+    }
+  }
+
 }
 

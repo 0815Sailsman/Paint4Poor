@@ -40,6 +40,7 @@ public class Paint4Poor2022 extends Application {
   private Button fill_area_button = new Button();
   private Button selection_mode_paint_button = new Button();
   private Button selection_mode_select_button = new Button();
+  private Button selection_mode_shape_button = new Button();
   private MenuButton filetype_button = new MenuButton("Select Filetype");
   private String selected_filetype = ".png";
   private int comps_in_pane;
@@ -162,6 +163,14 @@ public class Paint4Poor2022 extends Application {
     selection_mode_select_button.setLayoutX(750);
     selection_mode_select_button.setLayoutY(100);
     root.getChildren().add(selection_mode_select_button);
+    
+    selection_mode_shape_button.setOnAction(
+    (event) -> {selection_mode_shape_button_action(event);} 
+    );
+    selection_mode_shape_button.setText("Shape mode");
+    selection_mode_shape_button.setLayoutX(750);
+    selection_mode_shape_button.setLayoutY(150);
+    root.getChildren().add(selection_mode_shape_button);
     // Ende Komponenten
     
     comps_in_pane = root.getChildren().size();
@@ -321,6 +330,10 @@ public class Paint4Poor2022 extends Application {
   
   public void selection_mode_select_button_action(Event evt) {
     leinwand.set_selection_mode(SelectionMode.SELECT_MODE);
+  }
+  
+  public void selection_mode_shape_button_action(Event evt) {
+    leinwand.set_selection_mode(SelectionMode.SQUARE_MODE);
   }
   // Ende Methoden
 } 
